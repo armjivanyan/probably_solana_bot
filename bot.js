@@ -91,16 +91,20 @@ bot.onText(/\/donate1Sol/, async (msg, match) => {
     bot.sendMessage(chatId, result);
 });
 
-bot.onText(/\/balance (.+)/, async (msg, match) => {
+bot.onText(/\/balance/, async (msg, match) => {
     const chatId = msg.chat.id;
-    const walletAddress = match[1];
 
-    const balance = await getBalance(walletAddress);
+    if (!userKeys[chatId]) {
+         return bot.sendMessage(chatId, 'Please set your private key using /setPrivateKey <private-key>');
+    }
+    const senderKeypair = userKeys[chatId];
+
+    const balance = await getBalance(senderKeypair.publicKey.toString());
 
     if (balance !== null) {
-        bot.sendMessage(chatId, `The balance of wallet ${walletAddress} is ${balance} SOL.`);
+        bot.sendMessage(chatId, `The balance of your wallet is ${balance} SOL.`);
     } else {
-        bot.sendMessage(chatId, `Sorry, I couldn't fetch the balance for wallet ${walletAddress}.`);
+        bot.sendMessage(chatId, `Sorry, I couldn't fetch the balance of your wallet`);
     }
 });
 
