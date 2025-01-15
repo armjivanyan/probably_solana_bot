@@ -91,9 +91,22 @@ bot.onText(/\/donate1Sol/, async (msg, match) => {
     bot.sendMessage(chatId, result);
 });
 
+bot.onText(/\/balance (.+)/, async (msg, match) => {
+    const chatId = msg.chat.id;
+    const walletAddress = match[1];
+
+    const balance = await getBalance(walletAddress);
+
+    if (balance !== null) {
+        bot.sendMessage(chatId, `The balance of wallet ${walletAddress} is ${balance} SOL.`);
+    } else {
+        bot.sendMessage(chatId, `Sorry, I couldn't fetch the balance for wallet ${walletAddress}.`);
+    }
+});
+
 bot.onText(/\/start/, (msg) => {
     const chatId = msg.chat.id;
-    bot.sendMessage(chatId, 'Welcome to the Solana Donation Bot! \n\nUse the following commands to interact with the bot: \n\n/setPrivateKey <private-key> - Set your private key. \n/donate1Sol - Donate 1 SOL to the project.');
+    bot.sendMessage(chatId, 'Welcome to the Solana Devnet Donation Bot! \n\nUse the following commands to interact with the bot: \n\n/setPrivateKey <private-key> - Set your private key. \n/donate1Sol - Donate 1 SOL to the project.\n/balance - To check your remaining balance');
 });
 
 console.log('Bot is running...');
